@@ -1,0 +1,29 @@
+{
+  "name": "nomad-dht-shim",
+  "version": "0.0.1",
+  "description": "A shim for Nomad peer connection until the jsipfs DHT is implemented",
+  "main": "src/index.js",
+  "dependencies": {
+    "hapi": "16.1.0",
+    "ramda": "0.23.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IDEO-coLAB/nomad-dht-shim.git"
+  },
+  "keywords": [
+    "nomad",
+    "shim"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IDEO-coLAB/nomad-dht-shim/issues"
+  },
+  "homepage": "https://github.com/IDEO-coLAB/nomad-dht-shim#readme"
+}
