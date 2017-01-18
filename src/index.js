@@ -2,12 +2,11 @@ const Hapi = require('hapi')
 const R = require('ramda')
 
 const { applyError, missingInfoError, missingNodeIdError } = require('./error')
+const store = require('./store')
 
 const PORT = 8000
 
 const server = new Hapi.Server()
-
-let store = new Map()
 
 server.connection({
   host: 'localhost',
@@ -28,8 +27,9 @@ server.route({
     if (!peerInfo) {
       return applyError(reply, missingInfoError)
     }
-    store.set(nodeId, peerInfo)
-    return reply(true)
+    return store.set(nodeId, peerInfo)
+      .then(() => reply(true))
+      .catch((err) => applyError(reply, err))
   }
 })
 
@@ -42,8 +42,9 @@ server.route({
     if (!nodeId) {
       return applyError(reply, missingNodeIdError)
     }
-    store.delete(nodeId)
-    return reply(true)
+    return store.remove(nodeId)
+      .then(() => reply(true))
+      .catch((err) => applyError(reply, err))
   }
 })
 
@@ -56,8 +57,12 @@ server.route({
     if (!nodeId) {
       return applyError(reply, missingNodeIdError)
     }
-    const result = store.get(nodeId) || null
-    return reply(result)
+    return store.get(nodeId)
+      .then((peerInfo) => {
+        const result = peerInfo || null
+        return reply(result)
+      })
+      .catch((err) => applyError(reply, err))
   }
 })
 
