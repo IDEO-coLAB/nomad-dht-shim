@@ -1,7 +1,6 @@
 const Hapi = require('hapi')
-const R = require('ramda')
 
-const { applyError, missingInfoError, missingNodeIdError } = require('./error')
+const { applyError, missingDataError, missingNodeIdError } = require('./error')
 const store = require('./store')
 
 const PORT = 8000
@@ -9,25 +8,25 @@ const PORT = 8000
 const server = new Hapi.Server()
 
 server.connection({
-  host: 'localhost',
+  // host: 'localhost',
   port: PORT
 })
 
 server.route({
   method: 'POST',
-  path:'/conn/{node}',
+  path:'/conn',
   handler: function (request, reply) {
-    const nodeId = request.params.node
-    const peerInfo = request.payload.info  // possibly turn back into object
+    const data = request.payload
+    const nodeId = data.id
 
     if (!nodeId) {
       return applyError(reply, missingNodeIdError)
     }
 
-    if (!peerInfo) {
-      return applyError(reply, missingInfoError)
+    if (!data) {
+      return applyError(reply, missingDataError)
     }
-    return store.set(nodeId, peerInfo)
+    return store.set(nodeId, data)
       .then(() => reply(true))
       .catch((err) => applyError(reply, err))
   }
@@ -35,9 +34,10 @@ server.route({
 
 server.route({
   method: 'DELETE',
-  path:'/conn/{node}',
+  path:'/conn',
   handler: function (request, reply) {
-    const nodeId = request.params.node
+    const data = request.payload
+    const nodeId = data.id
 
     if (!nodeId) {
       return applyError(reply, missingNodeIdError)
@@ -50,9 +50,9 @@ server.route({
 
 server.route({
   method: 'GET',
-  path:'/conn/{node}',
+  path:'/conn',
   handler: function (request, reply) {
-    const nodeId = request.params.node
+    const nodeId = request.query.id
 
     if (!nodeId) {
       return applyError(reply, missingNodeIdError)
@@ -66,10 +66,11 @@ server.route({
   }
 })
 
-// Start the server
+// Start the shim server
 server.start((err) => {
   if (err) {
     throw err
   }
-  console.log('Shim server running at:', server.info.uri)
+  console.log('Shim server listening on port:', server.info.uri)
+  console.log(server.info)
 })
