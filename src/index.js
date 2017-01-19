@@ -26,6 +26,8 @@ server.route({
       return applyError(reply, missingNodeIdError)
     }
 
+    // TODO: check for multiaddrs
+
     return store.set(nodeId, data)
       .then(() => reply(true))
       .catch(err => applyError(reply, err))
@@ -37,8 +39,11 @@ server.route({
   path:'/connect',
   handler: function (request, reply) {
     const data = request.payload
-    const nodeId = data.id
+    if (!data) {
+      return applyError(reply, missingDataError)
+    }
 
+    const nodeId = data.id
     if (!nodeId) {
       return applyError(reply, missingNodeIdError)
     }
