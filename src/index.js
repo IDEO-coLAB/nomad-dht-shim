@@ -17,18 +17,18 @@ server.route({
   path:'/connect',
   handler: function (request, reply) {
     const data = request.payload
-    const nodeId = data.id
+    if (!data) {
+      return applyError(reply, missingDataError)
+    }
 
+    const nodeId = data.id
     if (!nodeId) {
       return applyError(reply, missingNodeIdError)
     }
 
-    if (!data) {
-      return applyError(reply, missingDataError)
-    }
     return store.set(nodeId, data)
       .then(() => reply(true))
-      .catch((err) => applyError(reply, err))
+      .catch(err => applyError(reply, err))
   }
 })
 
@@ -44,7 +44,7 @@ server.route({
     }
     return store.remove(nodeId)
       .then(() => reply(true))
-      .catch((err) => applyError(reply, err))
+      .catch(err => applyError(reply, err))
   }
 })
 
@@ -60,9 +60,9 @@ server.route({
     return store.get(nodeId)
       .then((peerInfo) => {
         const result = peerInfo || null
-        return reply(result)
+        return reply(JSON.stringify(result))
       })
-      .catch((err) => applyError(reply, err))
+      .catch(err => applyError(reply, err))
   }
 })
 
@@ -72,5 +72,5 @@ server.start((err) => {
     throw err
   }
   console.log('Shim server listening on port:', server.info.uri)
-  console.log(server.info)
+  // console.log(server.info)
 })
