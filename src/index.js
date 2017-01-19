@@ -14,7 +14,7 @@ server.connection({
 
 server.route({
   method: 'POST',
-  path:'/conn',
+  path:'/connect',
   handler: function (request, reply) {
     const data = request.payload
     const nodeId = data.id
@@ -34,7 +34,7 @@ server.route({
 
 server.route({
   method: 'DELETE',
-  path:'/conn',
+  path:'/connect',
   handler: function (request, reply) {
     const data = request.payload
     const nodeId = data.id
@@ -50,7 +50,7 @@ server.route({
 
 server.route({
   method: 'GET',
-  path:'/conn',
+  path:'/connect',
   handler: function (request, reply) {
     const nodeId = request.query.id
 
