@@ -1,2 +1,3 @@
-# nomad-dht-shim
-A shim for Nomad peer connection until the jsipfs DHT is implemented.
+# Nomad signal server
+Docker container for running a WebRTCStar signaling server.
+See https://github.com/libp2p/js-libp2p-webrtc-star for more details.
